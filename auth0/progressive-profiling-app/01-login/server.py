@@ -130,9 +130,9 @@ def profiling_1():
 @app.route('/profiling_1_handler', methods=['POST'])
 def profiling_1_handler():
     
-    car_color = r.form['carcolor']
-    birth_city = r.form['birthcity']
-    print car_color, birth_city
+    employername = r.form['employername']
+    designation = r.form['designation']
+    print employername, designation
 
 #    post_data = json.dumps({'usermetadata':{{'birth_city': birth_city}, { 'car_color':car_color}}})
 #
