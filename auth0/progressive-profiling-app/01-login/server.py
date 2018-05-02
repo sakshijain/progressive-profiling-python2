@@ -1,6 +1,7 @@
 """Python Flask WebApp Auth0 integration example
 """
 import json, urllib, urllib2
+import httplib
 import cgi
 from functools import wraps
 import json
@@ -134,31 +135,39 @@ def profiling_1_handler():
     designation = r.form['designation']
     print employername, designation
 
-#    post_data = json.dumps({'usermetadata':{{'birth_city': birth_city}, { 'car_color':car_color}}})
-#
-#
-#    # Configuration Values
-#    GRANT_TYPE = "client_credentials" # OAuth 2.0 flow to use
-#    
-#    # Get an Access Token from Auth0
-#    base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
-#    data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
-#    		('client_secret', AUTH0_CLIENT_SECRET),
-#    		('audience', "https://tpmmexercise-app.auth0.com/api/v2/"),
-#    		('grant_type', GRANT_TYPE)])
-#    req = urllib2.Request(base_url + "/oauth/token", data)
-#    response = urllib2.urlopen(req)
-#    oauth = json.loads(response.read())
-#    access_token = oauth['access_token']
-#    req = urllib2.Request(base_url + "/api/v2/users/" + userinfo['sub'])
-#    req.add_header('Authorization', 'Bearer ' + access_token)
-#    req.add_header('Content-Type', 'application/json')
-#    
-#    response = urllib2.Request(req, post_data)
-#    res = urllib2.urlopen(response)
-#    res = res.read()
-#    print res
-#
+    post_data = json.dumps({
+		    "user_metadata": {
+		    "employer_name": employername,
+		    "designation": designation
+		    }
+		    })
+    print post_data
+
+    # Configuration Values
+    GRANT_TYPE = "client_credentials" # OAuth 2.0 flow to use
+    
+    # Get an Access Token from Auth0
+    base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
+    data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
+    		('client_secret', AUTH0_CLIENT_SECRET),
+    		('audience', "https://tpmmexercise-app.auth0.com/api/v2/"),
+    		('grant_type', GRANT_TYPE)])
+    req = urllib2.Request(base_url + "/oauth/token", data)
+    response = urllib2.urlopen(req)
+    oauth = json.loads(response.read())
+    access_token = oauth['access_token']
+    print base_url
+    req = urllib2.Request(base_url + "/api/v2/users/" + session[constants.JWT_PAYLOAD]['sub'], post_data)
+    req.get_method = lambda: 'PATCH'
+    req.add_header('Authorization', 'Bearer ' + access_token)
+    req.add_header('Content-Type', 'application/json')
+    print post_data
+    print req
+    
+    response = urllib2.urlopen(req, post_data)
+    print response.read()
+
+ 
     return redirect('/dashboard')
 
 
