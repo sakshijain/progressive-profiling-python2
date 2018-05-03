@@ -88,6 +88,9 @@ def callback_handling():
     resp = requests.get(url, headers=headers)
     userinfo = resp.json()
 
+    print "------------user info part 1-------------"
+    print userinfo 
+
     session[constants.JWT_PAYLOAD] = userinfo
 
     session[constants.PROFILE_KEY] = {
@@ -103,7 +106,7 @@ def callback_handling():
     base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
     data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
     		('client_secret', AUTH0_CLIENT_SECRET),
-    		('audience', "https://tpmmexercise-app.auth0.com/api/v2/"),
+    		('audience', AUTH0_BASE_URL + "/api/v2/"),
     		('grant_type', GRANT_TYPE)])
     req = urllib2.Request(base_url + "/oauth/token", data)
     response = urllib2.urlopen(req)
@@ -150,7 +153,7 @@ def profiling_1_handler():
     base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
     data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
     		('client_secret', AUTH0_CLIENT_SECRET),
-    		('audience', "https://tpmmexercise-app.auth0.com/api/v2/"),
+    		('audience', AUTH0_BASE_URL + "/api/v2/"),
     		('grant_type', GRANT_TYPE)])
     req = urllib2.Request(base_url + "/oauth/token", data)
     response = urllib2.urlopen(req)
