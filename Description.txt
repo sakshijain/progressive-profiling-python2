@@ -1,7 +1,0 @@
-Progressive profiling is implemented using Python2 flask client and auth0 api v2.
-
-a) Manipulate logins_count field from api/v2/users/<userid> GET request (file: server.py)
-
-b) URL pattern /profiling_1 collects userinfo after every N logins (configurable). Right now N=2.
-
-c) Fetch the values using HTML form and use it to update the user_metadata in the backend.
