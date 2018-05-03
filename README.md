@@ -56,15 +56,10 @@ The [Responsible Disclosure Program](https://auth0.com/whitehat) details the pro
 
 [Auth0](https://auth0.com)
 
-## License
-
-This project is licensed under the MIT license. See the [LICENSE](LICENCE) file for more info.
-
 
 In addition to above,
 
 # progressive-profiling-python2
-Implementing progressive profiling using auth0 API v2 and Flask client
 
 https://auth0.com/docs/quickstart/backend/python/01-authorization#create-a-resource-server-api-
 
@@ -77,3 +72,6 @@ b) URL pattern /profiling_1 collects userinfo after every N logins (configurable
 c) Fetch the values using HTML form and use it to update the user_metadata in the backend.
 
 
+## License
+
+This project is licensed under the MIT license. See the [LICENSE](LICENCE) file for more info.
