@@ -1,6 +1,14 @@
-# Auth0 Python Web App Sample
+# Auth0 Python Progressive Profiling Demo
 
 This sample demonstrates how to add authentication to a Python web app using Auth0.
+
+## Create a python application from auth0 Dashboard
+
+https://manage.auth0.com/#/applications
+Create Application -> Python App
+
+## Create a API endpoint on the dashboard using the link below :
+https://auth0.com/docs/quickstart/backend/python/01-authorization#create-a-resource-server-api-
 
 # Running the App
 
@@ -16,16 +24,6 @@ as `Allowed Logout URLs` in your client settings.
 Run `pip install -r requirements.txt` to install the dependencies and run `python server.py`. 
 The app will be served at [http://localhost:3000/](http://localhost:3000/).
 
-# Running the App with Docker
-
-To run the sample, make sure you have `docker` installed.
-
-To run the sample with [Docker](https://www.docker.com/), make sure you have `docker` installed.
-
-Rename the .env.example file to .env, change the environment variables, and register the URLs as explained [previously](#running-the-app).
-
-Run `sh exec.sh` to build and run the docker image in Linux or run `.\exec.ps1` to build 
-and run the docker image on Windows.
 
 ## What is Auth0?
 
@@ -55,21 +53,6 @@ The [Responsible Disclosure Program](https://auth0.com/whitehat) details the pro
 ## Author
 
 [Auth0](https://auth0.com)
-
-
-In addition to above,
-
-# progressive-profiling-python2
-
-https://auth0.com/docs/quickstart/backend/python/01-authorization#create-a-resource-server-api-
-
-Progressive profiling is implemented using Python2 flask client and auth0 api v2.
-
-a) Manipulate logins_count field from api/v2/users/<userid> GET request (file: server.py)
-
-b) URL pattern /profiling_1 collects userinfo after every N logins (configurable). Right now N=2.
-
-c) Fetch the values using HTML form and use it to update the user_metadata in the backend.
 
 
 ## License
