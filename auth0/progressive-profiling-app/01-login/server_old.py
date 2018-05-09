@@ -1,6 +1,6 @@
 """Python Flask WebApp Auth0 integration example
 """
-import json # urllib, urllib2
+import json, urllib, urllib2
 import httplib
 import cgi
 from functools import wraps
@@ -81,14 +81,17 @@ def home():
 @app.route('/callback')
 def callback_handling():
     resp = auth0.authorize_access_token()
+    token = resp
 
     url = AUTH0_BASE_URL + '/userinfo'
     headers = {'authorization': 'Bearer ' + resp['access_token']}
     resp = requests.get(url, headers=headers)
     userinfo = resp.json()
 
-    session[constants.JWT_PAYLOAD] = userinfo 
+    print "------------user info part 1-------------"
+    print userinfo 
 
+    session[constants.JWT_PAYLOAD] = userinfo
 
     session[constants.PROFILE_KEY] = {
         'user_id': userinfo['sub'],
@@ -101,20 +104,23 @@ def callback_handling():
     
     # Get an Access Token from Auth0
     base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
-    data = { 'client_id': AUTH0_CLIENT_ID,
-             'client_secret': AUTH0_CLIENT_SECRET,
-	     'audience': AUTH0_BASE_URL + "/api/v2/",
-	     'grant_type': GRANT_TYPE
-	   }
-    res = requests.post(base_url + "/oauth/token", data)
-    response = res.json()
-    access_token = response['access_token']
-    headers = { 'Authorization': 'Bearer ' + access_token, 
-		'Content-Type': 'application/json'}
-    res = requests.get(base_url + "/api/v2/users/" + userinfo['sub'], headers=headers)
-    response = res.json()
+    data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
+    		('client_secret', AUTH0_CLIENT_SECRET),
+    		('audience', AUTH0_BASE_URL + "/api/v2/"),
+    		('grant_type', GRANT_TYPE)])
+    req = urllib2.Request(base_url + "/oauth/token", data)
+    response = urllib2.urlopen(req)
+    oauth = json.loads(response.read())
+    access_token = oauth['access_token']
+    req = urllib2.Request(base_url + "/api/v2/users/" + userinfo['sub'])
+    req.add_header('Authorization', 'Bearer ' + access_token)
+    req.add_header('Content-Type', 'application/json')
 
-    if response['logins_count'] % 2 == 0 :
+    response = urllib2.urlopen(req)
+    res = json.loads(response.read())
+    print res['logins_count']
+
+    if res['logins_count'] % 2 == 0 :
 	    return redirect('/profiling_1')
 
     return redirect('/dashboard')
@@ -130,6 +136,7 @@ def profiling_1_handler():
     
     employername = r.form['employername']
     designation = r.form['designation']
+    print employername, designation
 
     post_data = json.dumps({
 		    "user_metadata": {
@@ -137,25 +144,31 @@ def profiling_1_handler():
 		    "designation": designation
 		    }
 		    })
+    print post_data
 
     # Configuration Values
     GRANT_TYPE = "client_credentials" # OAuth 2.0 flow to use
     
     # Get an Access Token from Auth0
     base_url = "https://{domain}".format(domain=AUTH0_DOMAIN)
-    data = { 'client_id': AUTH0_CLIENT_ID,
-             'client_secret': AUTH0_CLIENT_SECRET,
-	     'audience': AUTH0_BASE_URL + "/api/v2/",
-	     'grant_type': GRANT_TYPE
-	   }
-    res = requests.post(base_url + "/oauth/token", data)
-    response = res.json()
-    access_token = response['access_token']
-    headers = { 'Authorization': 'Bearer ' + access_token, 
-                'Content-Type': 'application/json'}
-    res = requests.patch(base_url + "/api/v2/users/" + session[constants.JWT_PAYLOAD]['sub'], post_data, headers=headers)
-    response = res.json()
-    session[constants.JWT_PAYLOAD] = response
+    data = urllib.urlencode([('client_id', AUTH0_CLIENT_ID),
+    		('client_secret', AUTH0_CLIENT_SECRET),
+    		('audience', AUTH0_BASE_URL + "/api/v2/"),
+    		('grant_type', GRANT_TYPE)])
+    req = urllib2.Request(base_url + "/oauth/token", data)
+    response = urllib2.urlopen(req)
+    oauth = json.loads(response.read())
+    access_token = oauth['access_token']
+    print base_url
+    req = urllib2.Request(base_url + "/api/v2/users/" + session[constants.JWT_PAYLOAD]['sub'], post_data)
+    req.get_method = lambda: 'PATCH'
+    req.add_header('Authorization', 'Bearer ' + access_token)
+    req.add_header('Content-Type', 'application/json')
+    print post_data
+    print req
+    
+    response = urllib2.urlopen(req, post_data)
+    print response.read()
 
  
     return redirect('/dashboard')
